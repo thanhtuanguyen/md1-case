@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<html>
+<div id="MyClockDisplay" class="clock" onload="showTime()"></div>
+</html>
+<script>
+    function showTime(){
+        var date = new Date();
+        var h = date.getHours(); // 0 - 23
+        var m = date.getMinutes(); // 0 - 59
+        var s = date.getSeconds(); // 0 - 59
+        var session = "AM";
+
+        if(h == 0){
+            h = 12;
+        }
+
+        if(h > 12){
+            h = h - 12;
+            session = "PM";
+        }
+
+        h = (h < 10) ? "0" + h : h;
+        m = (m < 10) ? "0" + m : m;
+        s = (s < 10) ? "0" + s : s;
+
+        var time = h + ":" + m + ":" + s + " " + session;
+        document.getElementById("MyClockDisplay").innerText = time;
+        document.getElementById("MyClockDisplay").textContent = time;
+
+        setTimeout(showTime, 1000);
+
+    }
+
+    showTime();
+
+
+</script>
+</head>
+<body>
+<div class="main">
+    <div class="top" style="text-align: center;">
+        Nhập thông tin sản phẩm
+    </div>
+    <form>
+        <ul>
+            <li>
+                <div style="font-weight: bold; font-family: Arial, Helvetica, sans-serif;">Tên người mua</div>
+                <input type="text" style="width: 706px;height: 22px;border: 1px solid grey;" id="product_name">
+            </li>
+            <li>
+                <div style="font-weight: bold; font-family: Arial, Helvetica, sans-serif;">Chọn hãng</div>
+                <select type="text" style="width: 712px;height: 29px;border: 1px solid grey;" id="manufacturer_name" onchange="changeManufacturer()">
+                </select>
+            </li>
+            <li>
+                <div style="font-weight: bold; font-family: Arial, Helvetica, sans-serif;">Chọn sản phẩm</div>
+                <select type="text" style="width: 712px;height: 29px;border: 1px solid grey;" id="category_name">
+                </select>
+            </li>
+            <li>
+                <div style="font-weight: bold; font-family: Arial, Helvetica, sans-serif;">Giá</div>
+                <input type="text" style="width: 706px;height: 22px;border: 1px solid grey;" id="price" onkeyup="updateTotalPrice()">
+            </li>
+            <li>
+                <div style="font-weight: bold; font-family: Arial, Helvetica, sans-serif;">Số lượng</div>
+                <input type="text" style="width: 706px;height: 22px;border: 1px solid grey;" id="quantity" onkeyup="updateTotalPrice()">
+            </li>
+            <li>
+                <div style="font-weight: bold; font-family: Arial, Helvetica, sans-serif;">Tổng tiền</div>
+                <input type="text" style="width: 706px;height: 22px;border: 1px solid grey;background-color: rgb(241, 232, 232);" id="total_price" disabled>
+            </li>
+            <div style="display: flex;">
+                <button type="button" style="background-color: #6895e3" onclick="addProduct()">Add products</button>
+                <button style="background-color: #e6d08a" type="reset" id="reset_btn">Reset</button>
+            </div>
+        </ul>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var manufacturerList = {
+        "Apple": ["Iphone 5", "Iphone 5s", "Iphone 6", "Iphone 12"],
+        "Samsung": ["Samsung galaxy 5s", "Samsung galaxy 6"],
+        "LG": ["LG01", "LG02"],
+        "Sony": ["Sony 01", "Sony 02"],
+        "Google": ["GG01", "GG02"]
+    }
+
+
+    var manufacturerTag = document.getElementById('manufacturer_name');
+    manufacturerTag.innerHTML = '<option value="">-- Chon --</option>';
+    for(var key in manufacturerList) {
+        manufacturerTag.innerHTML += `<option value="${key}">${key}</option>`
+    }
+
+    var dataList = []
+    //lay du lieu tu localStorage
+    json = localStorage.getItem('dataList')
+    console.log(json)
+    dataList = JSON.parse(json)
+    console.log(dataList)
+    showData()
+
+    function changeManufacturer() {
+        // console.log(manufacturerTag.value)
+        categoryList = manufacturerList[manufacturerTag.value]
+        // console.log(categoryList)
+        //Hien thi du lieu ra tag: caregory_name
+        categoryTag = document.getElementById('category_name')
+        categoryTag.innerHTML = ''
+
+        if(categoryList != null && categoryList.length > 0) {
+            //hien thi
+            categoryTag.innerHTML = '<option value="">-- Chon --</option>';
+            for (var i = 0; i < categoryList.length; i++) {
+                categoryTag.innerHTML += `<option value="${categoryList[i]}">${categoryList[i]}</option>`
+            }
+        }
+    }
+
+    function updateTotalPrice() {
+        price = document.getElementById('price').value
+        quantity = document.getElementById('quantity').value
+        total = price * quantity
+
+        document.getElementById('total_price').value = total
+    }
+
+</script>
+</body>
